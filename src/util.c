@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "util.h"
+#include "types.h"
 
 /**
  * panic - 模拟器遇到致命错误，打印信息后退出
