@@ -18,12 +18,23 @@
 #define container_of(ptr, type, member) \
 	((type *)((char *)(ptr) - offsetof(type, member)))
 
+#ifdef ENABLE_DUMP
+
 /**
  * dump_mem - 打印内存的十六进制内容（调试用）
  * @data: 内存起始地址
  * @size: 打印字节数
  */
 void dump_mem(const void *data, size_t size);
+
+#else
+
+/* 不启用时定义为空宏，避免链接错误 */
+#define dump_mem(data, size) \
+	do {                 \
+	} while (0)
+
+#endif
 
 /**
  * panic - 模拟器内部错误，打印信息并退出

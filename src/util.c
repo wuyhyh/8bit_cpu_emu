@@ -1,6 +1,7 @@
+#ifdef ENABLE_DUMP
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include "util.h"
 #include "types.h"
 
@@ -60,3 +61,44 @@ int load_hex_file(const char *filename, u8 *buf, size_t max_len)
 	fclose(fp);
 	return (int)count;
 }
+
+#else
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "util.h"
+#include "types.h"
+
+void panic(const char *msg)
+{
+	fprintf(stderr, "PANIC: %s\n", msg);
+	exit(EXIT_FAILURE);
+}
+
+int load_hex_file(const char *filename, u8 *buf, size_t max_len)
+{
+	FILE *fp = fopen(filename, "r");
+	if (!fp) {
+		perror("fopen");
+		return -1;
+	}
+
+	size_t count = 0;
+	while (count < max_len) {
+		unsigned int byte;
+		int ret = fscanf(fp, "%x", &byte);
+		if (ret == EOF)
+			break;
+		if (ret != 1 || byte > 0xFF) {
+			fprintf(stderr, "Invalid hex byte in file\n");
+			fclose(fp);
+			return -1;
+		}
+		buf[count++] = (u8)byte;
+	}
+
+	fclose(fp);
+	return (int)count;
+}
+
+#endif /* ENABLE_DUMP */

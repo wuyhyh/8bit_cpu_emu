@@ -2,6 +2,17 @@
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude -std=c99 -g
+
+# 添加此行来控制是否开启调试打印
+# make ENABLE_DUMP=1（定义宏），否则不定义
+ifdef ENABLE_DUMP
+CFLAGS += -DENABLE_DUMP
+endif
+
+ifdef ENABLE_DUMP
+CFLAGS += -DENABLE_DUMP
+endif
+
 SRC_DIR = src
 OBJ_DIR = build
 
