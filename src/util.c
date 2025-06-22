@@ -34,3 +34,29 @@ void dump_mem(const void *data, size_t size)
 	if (i % 16 != 0)
 		printf("\n");
 }
+
+int load_hex_file(const char *filename, u8 *buf, size_t max_len)
+{
+	FILE *fp = fopen(filename, "r");
+	if (!fp) {
+		perror("fopen");
+		return -1;
+	}
+
+	size_t count = 0;
+	while (count < max_len) {
+		unsigned int byte;
+		int ret = fscanf(fp, "%x", &byte);
+		if (ret == EOF)
+			break;
+		if (ret != 1 || byte > 0xFF) {
+			fprintf(stderr, "Invalid hex byte in file\n");
+			fclose(fp);
+			return -1;
+		}
+		buf[count++] = (u8)byte;
+	}
+
+	fclose(fp);
+	return (int)count;
+}
