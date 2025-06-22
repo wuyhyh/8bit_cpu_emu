@@ -21,8 +21,10 @@ int main(void)
 	memory_init(&mem);
 	memory_load(&mem, prog_buf, (u8)size);
 
+#ifdef ENABLE_DUMP
 	printf("Loaded memory contents:\n");
 	dump_mem(mem.data, 32);  // 打印前 32 字节内容查看程序是否加载成功
+#endif
 
 	cpu_init(&cpu, &mem);
 
