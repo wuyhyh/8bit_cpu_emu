@@ -12,9 +12,9 @@ int main(void)
 	struct memory mem;
 	u8 prog_buf[PROGRAM_MAX];
 
-	int size = load_hex_file("test/prog1.hex", prog_buf, PROGRAM_MAX);
+	int size = load_hex_file("test/prog1.hex.txt", prog_buf, PROGRAM_MAX);
 	if (size < 0) {
-		fprintf(stderr, "Failed to load test/prog1.hex\n");
+		fprintf(stderr, "Failed to load test/prog1.hex.txt\n");
 		return 1;
 	}
 
