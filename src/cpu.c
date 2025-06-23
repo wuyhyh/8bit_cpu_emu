@@ -81,9 +81,16 @@ void cpu_run(struct cpu *cpu)
 		}
 
 #ifdef ENABLE_DUMP
-		printf("R0=%02X R1=%02X R2=%02X R3=%02X | ZF=%d CF=%d\n",
-		       cpu->regs[0], cpu->regs[1], cpu->regs[2], cpu->regs[3],
-		       cpu->zf, cpu->cf);
+		cpu_dump_state(cpu);
 #endif
 	}
+}
+
+void cpu_dump_state(struct cpu *cpu)
+{
+	printf("PC=%02X | ", cpu->pc);
+	printf("R0=%02X R1=%02X R2=%02X R3=%02X | ",
+	       cpu->regs[0], cpu->regs[1], cpu->regs[2], cpu->regs[3]);
+	printf("ZF=%d CF=%d | ", cpu->zf, cpu->cf);
+	printf("ALU=%02X\n", cpu->alu.last_result);
 }

@@ -33,4 +33,10 @@ u8 alu_add(struct alu *alu, struct cpu *cpu, u8 a, u8 b);
  */
 u8 alu_sub(struct alu *alu, struct cpu *cpu, u8 a, u8 b);
 
+/**
+ * cpu_dump_state - 打印 CPU 当前状态（调试用）
+ * @cpu: 指向 CPU 实例
+ */
+void cpu_dump_state(struct cpu *cpu);
+
 #endif /* _ALU_H */
