@@ -48,6 +48,7 @@ FF            ; HALT
 ```
 
 - 跳转指令
+
 ```text
 LOAD R0, 0     ; R0 = 0
 LOAD R1, 1     ; R1 = 1
@@ -58,6 +59,7 @@ HALT           ; 不会执行
 LOAD R2, 42    ; 被跳转执行
 HALT
 ```
+
 ```text
 10 00 00
 10 01 01
@@ -67,4 +69,30 @@ HALT
 FF
 10 02 2A
 FF
+```
+
+- 逻辑指令
+
+```text
+LOAD R0, 0xF0     ; 11110000
+LOAD R1, 0x0F     ; 00001111
+AND R2, R0, R1    ; R2 = R0 & R1 = 00000000
+OR R2, R0         ; R2 = R2 | R0 = F0
+XOR R2, R1        ; R2 = F0 ^ 0F = FF
+NOT R2            ; R2 = ~FF = 00
+```
+
+```text
+10 00 F0      ; LOAD R0, 0xF0
+10 01 0F      ; LOAD R1, 0x0F
+11 02 00      ; MOV R2, R0
+24 02 01      ; AND R2, R1  -> 00
+25 02 00      ; OR  R2, R0  -> F0
+26 02 01      ; XOR R2, R1  -> FF
+27 02         ; NOT R2      -> 00
+FF            ; HALT
+```
+
+```text
+10 00 F0 10 01 0F 11 02 00 24 02 01 25 02 00 26 02 01 27 02 FF
 ```

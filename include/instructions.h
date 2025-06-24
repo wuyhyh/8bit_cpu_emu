@@ -24,5 +24,9 @@
 #define INSTR_JNZ	0x32  /**< 若 ZF==0 跳转 */
 #define INSTR_JC	0x33  /**< 若 CF==1 跳转 */
 #define INSTR_JNC	0x34  /**< 若 CF==0 跳转 */
+#define INSTR_AND	0x24  /**< AND Rn, Rm */
+#define INSTR_OR	0x25  /**< OR Rn, Rm */
+#define INSTR_XOR	0x26  /**< XOR Rn, Rm */
+#define INSTR_NOT	0x27  /**< NOT Rn */
 
 #endif /* _INSTRUCTIONS_H */

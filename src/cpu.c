@@ -180,6 +180,56 @@ void cpu_run(struct cpu *cpu)
 			break;
 		}
 
+		case INSTR_AND: {
+			u8 dst = memory_read(cpu->mem, cpu->pc + 1);
+			u8 src = memory_read(cpu->mem, cpu->pc + 2);
+
+			if (dst >= 4 || src >= 4)
+				panic("Invalid register in AND");
+
+			cpu->regs[dst] &= cpu->regs[src];
+			cpu->zf = (cpu->regs[dst] == 0);
+			cpu->pc += 3;
+			break;
+		}
+
+		case INSTR_OR: {
+			u8 dst = memory_read(cpu->mem, cpu->pc + 1);
+			u8 src = memory_read(cpu->mem, cpu->pc + 2);
+
+			if (dst >= 4 || src >= 4)
+				panic("Invalid register in OR");
+
+			cpu->regs[dst] |= cpu->regs[src];
+			cpu->zf = (cpu->regs[dst] == 0);
+			cpu->pc += 3;
+			break;
+		}
+
+		case INSTR_XOR: {
+			u8 dst = memory_read(cpu->mem, cpu->pc + 1);
+			u8 src = memory_read(cpu->mem, cpu->pc + 2);
+
+			if (dst >= 4 || src >= 4)
+				panic("Invalid register in XOR");
+
+			cpu->regs[dst] ^= cpu->regs[src];
+			cpu->zf = (cpu->regs[dst] == 0);
+			cpu->pc += 3;
+			break;
+		}
+
+		case INSTR_NOT: {
+			u8 reg = memory_read(cpu->mem, cpu->pc + 1);
+			if (reg >= 4)
+				panic("Invalid register in NOT");
+
+			cpu->regs[reg] = ~cpu->regs[reg];
+			cpu->zf = (cpu->regs[reg] == 0);
+			cpu->pc += 2;
+			break;
+		}
+
 		default:
 			printf("Unknown instruction: 0x%02X\n", instr);
 			panic("Invalid instruction");
