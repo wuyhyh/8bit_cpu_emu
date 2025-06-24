@@ -14,5 +14,7 @@
 #define INSTR_LOAD_IMM  0x10  /**< LOAD Rn, imm */
 #define INSTR_MOV       0x11  /**< MOV Rn, Rm */
 #define INSTR_ADD       0x20  /**< ADD Rn, Rm */
+#define INSTR_LOADM     0x12  /**< LOADM Rn, addr */
+#define INSTR_STORE     0x13  /**< STORE Rn, addr */
 
 #endif /* _INSTRUCTIONS_H */
