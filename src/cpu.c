@@ -138,6 +138,48 @@ void cpu_run(struct cpu *cpu)
 			break;
 		}
 
+		case INSTR_JMP: {
+			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
+			cpu->pc = addr;
+			break;
+		}
+
+		case INSTR_JZ: {
+			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
+			if (cpu->zf)
+				cpu->pc = addr;
+			else
+				cpu->pc += 2;
+			break;
+		}
+
+		case INSTR_JNZ: {
+			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
+			if (!cpu->zf)
+				cpu->pc = addr;
+			else
+				cpu->pc += 2;
+			break;
+		}
+
+		case INSTR_JC: {
+			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
+			if (cpu->cf)
+				cpu->pc = addr;
+			else
+				cpu->pc += 2;
+			break;
+		}
+
+		case INSTR_JNC: {
+			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
+			if (!cpu->cf)
+				cpu->pc = addr;
+			else
+				cpu->pc += 2;
+			break;
+		}
+
 		default:
 			printf("Unknown instruction: 0x%02X\n", instr);
 			panic("Invalid instruction");

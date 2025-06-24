@@ -19,5 +19,10 @@
 #define INSTR_SUB       0x21  /**< SUB Rn, Rm */
 #define INSTR_INC       0x22  /**< INC Rn */
 #define INSTR_DEC       0x23  /**< DEC Rn */
+#define INSTR_JMP	0x30  /**< 无条件跳转 */
+#define INSTR_JZ	0x31  /**< 若 ZF==1 跳转 */
+#define INSTR_JNZ	0x32  /**< 若 ZF==0 跳转 */
+#define INSTR_JC	0x33  /**< 若 CF==1 跳转 */
+#define INSTR_JNC	0x34  /**< 若 CF==0 跳转 */
 
 #endif /* _INSTRUCTIONS_H */
