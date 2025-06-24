@@ -16,5 +16,8 @@
 #define INSTR_ADD       0x20  /**< ADD Rn, Rm */
 #define INSTR_LOADM     0x12  /**< LOADM Rn, addr */
 #define INSTR_STORE     0x13  /**< STORE Rn, addr */
+#define INSTR_SUB       0x21  /**< SUB Rn, Rm */
+#define INSTR_INC       0x22  /**< INC Rn */
+#define INSTR_DEC       0x23  /**< DEC Rn */
 
 #endif /* _INSTRUCTIONS_H */
