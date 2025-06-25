@@ -20,220 +20,23 @@ void cpu_init(struct cpu *cpu, struct memory *mem)
 	cpu->alu.carry = 0;
 }
 
+#include "instructions.h"
+
 void cpu_run(struct cpu *cpu)
 {
 	while (1) {
-		u8 instr = memory_read(cpu->mem, cpu->pc);
+		u8 opcode = memory_read(cpu->mem, cpu->pc);
+		instr_fn_t fn = instruction_table[opcode];
 
 		printf("[PC=0x%02X] Executing opcode: 0x%02X\n", cpu->pc,
-		       instr);
+		       opcode);
 
-		switch (instr) {
-		case INSTR_NOP:
-			cpu->pc += 1;
-			break;
-
-		case INSTR_HALT:
-			printf("HALT encountered. Stopping CPU.\n");
-			return;
-
-		case INSTR_LOAD_IMM: {
-			u8 reg = memory_read(cpu->mem, cpu->pc + 1);
-			u8 val = memory_read(cpu->mem, cpu->pc + 2);
-
-			if (reg >= 4)
-				panic("Invalid register in LOAD");
-
-			cpu->regs[reg] = val;
-			cpu->zf = (val == 0);
-			cpu->pc += 3;
-			break;
-		}
-
-		case INSTR_MOV: {
-			u8 dst = memory_read(cpu->mem, cpu->pc + 1);
-			u8 src = memory_read(cpu->mem, cpu->pc + 2);
-
-			if (dst >= 4 || src >= 4)
-				panic("Invalid register in MOV");
-
-			cpu->regs[dst] = cpu->regs[src];
-			cpu->zf = (cpu->regs[dst] == 0);
-			cpu->pc += 3;
-			break;
-		}
-
-		case INSTR_LOADM: {
-			u8 reg = memory_read(cpu->mem, cpu->pc + 1);
-			u8 addr = memory_read(cpu->mem, cpu->pc + 2);
-
-			if (reg >= 4)
-				panic("Invalid register in LOADM");
-
-			cpu->regs[reg] = memory_read(cpu->mem, addr);
-			cpu->zf = (cpu->regs[reg] == 0);
-			cpu->pc += 3;
-			break;
-		}
-
-		case INSTR_STORE: {
-			u8 reg = memory_read(cpu->mem, cpu->pc + 1);
-			u8 addr = memory_read(cpu->mem, cpu->pc + 2);
-
-			if (reg >= 4)
-				panic("Invalid register in STORE");
-
-			memory_write(cpu->mem, addr, cpu->regs[reg]);
-			cpu->pc += 3;
-			break;
-		}
-
-		case INSTR_ADD: {
-			u8 dst = memory_read(cpu->mem, cpu->pc + 1);
-			u8 src = memory_read(cpu->mem, cpu->pc + 2);
-
-			if (dst >= 4 || src >= 4)
-				panic("Invalid register in ADD");
-
-			u8 result = alu_add(&cpu->alu, cpu, cpu->regs[dst],
-					    cpu->regs[src]);
-			cpu->regs[dst] = result;
-			cpu->pc += 3;
-			break;
-		}
-
-		case INSTR_SUB: {
-			u8 dst = memory_read(cpu->mem, cpu->pc + 1);
-			u8 src = memory_read(cpu->mem, cpu->pc + 2);
-
-			if (dst >= 4 || src >= 4)
-				panic("Invalid register in SUB");
-
-			u8 result = alu_sub(&cpu->alu, cpu, cpu->regs[dst],
-					    cpu->regs[src]);
-			cpu->regs[dst] = result;
-			cpu->pc += 3;
-			break;
-		}
-
-		case INSTR_INC: {
-			u8 reg = memory_read(cpu->mem, cpu->pc + 1);
-			if (reg >= 4)
-				panic("Invalid register in INC");
-
-			u8 result = alu_add(&cpu->alu, cpu, cpu->regs[reg], 1);
-			cpu->regs[reg] = result;
-			cpu->pc += 2;
-			break;
-		}
-
-		case INSTR_DEC: {
-			u8 reg = memory_read(cpu->mem, cpu->pc + 1);
-			if (reg >= 4)
-				panic("Invalid register in DEC");
-
-			u8 result = alu_sub(&cpu->alu, cpu, cpu->regs[reg], 1);
-			cpu->regs[reg] = result;
-			cpu->pc += 2;
-			break;
-		}
-
-		case INSTR_JMP: {
-			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
-			cpu->pc = addr;
-			break;
-		}
-
-		case INSTR_JZ: {
-			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
-			if (cpu->zf)
-				cpu->pc = addr;
-			else
-				cpu->pc += 2;
-			break;
-		}
-
-		case INSTR_JNZ: {
-			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
-			if (!cpu->zf)
-				cpu->pc = addr;
-			else
-				cpu->pc += 2;
-			break;
-		}
-
-		case INSTR_JC: {
-			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
-			if (cpu->cf)
-				cpu->pc = addr;
-			else
-				cpu->pc += 2;
-			break;
-		}
-
-		case INSTR_JNC: {
-			u8 addr = memory_read(cpu->mem, cpu->pc + 1);
-			if (!cpu->cf)
-				cpu->pc = addr;
-			else
-				cpu->pc += 2;
-			break;
-		}
-
-		case INSTR_AND: {
-			u8 dst = memory_read(cpu->mem, cpu->pc + 1);
-			u8 src = memory_read(cpu->mem, cpu->pc + 2);
-
-			if (dst >= 4 || src >= 4)
-				panic("Invalid register in AND");
-
-			cpu->regs[dst] &= cpu->regs[src];
-			cpu->zf = (cpu->regs[dst] == 0);
-			cpu->pc += 3;
-			break;
-		}
-
-		case INSTR_OR: {
-			u8 dst = memory_read(cpu->mem, cpu->pc + 1);
-			u8 src = memory_read(cpu->mem, cpu->pc + 2);
-
-			if (dst >= 4 || src >= 4)
-				panic("Invalid register in OR");
-
-			cpu->regs[dst] |= cpu->regs[src];
-			cpu->zf = (cpu->regs[dst] == 0);
-			cpu->pc += 3;
-			break;
-		}
-
-		case INSTR_XOR: {
-			u8 dst = memory_read(cpu->mem, cpu->pc + 1);
-			u8 src = memory_read(cpu->mem, cpu->pc + 2);
-
-			if (dst >= 4 || src >= 4)
-				panic("Invalid register in XOR");
-
-			cpu->regs[dst] ^= cpu->regs[src];
-			cpu->zf = (cpu->regs[dst] == 0);
-			cpu->pc += 3;
-			break;
-		}
-
-		case INSTR_NOT: {
-			u8 reg = memory_read(cpu->mem, cpu->pc + 1);
-			if (reg >= 4)
-				panic("Invalid register in NOT");
-
-			cpu->regs[reg] = ~cpu->regs[reg];
-			cpu->zf = (cpu->regs[reg] == 0);
-			cpu->pc += 2;
-			break;
-		}
-
-		default:
-			printf("Unknown instruction: 0x%02X\n", instr);
+		if (!fn) {
+			printf("Unknown instruction: 0x%02X\n", opcode);
 			panic("Invalid instruction");
 		}
+
+		fn(cpu); /* 调用对应指令处理函数 */
 
 #ifdef ENABLE_DUMP
 		cpu_dump_state(cpu);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "types.h"
 #include "cpu.h"
+#include "instructions.h"
 #include "memory.h"
 #include "util.h"
 
@@ -12,9 +13,9 @@ int main(void)
 	struct memory mem;
 	u8 prog_buf[PROGRAM_MAX];
 
-	int size = load_hex_file("test/prog1.hex.txt", prog_buf, PROGRAM_MAX);
+	int size = load_hex_file("test/prog1.hex.txt", prog_buf, sizeof(prog_buf));
 	if (size < 0) {
-		fprintf(stderr, "Failed to load test/prog1.hex.txt\n");
+		fprintf(stderr, "Failed to load program.\n");
 		return 1;
 	}
 
@@ -27,6 +28,8 @@ int main(void)
 #endif
 
 	cpu_init(&cpu, &mem);
+
+	instructions_init(); // 初始化函数表
 
 	cpu_run(&cpu);
 

@@ -3,30 +3,26 @@
 
 #include "types.h"
 
+struct cpu;
+
 /**
  * @file instructions.h
- * @brief 定义指令集中的 opcode 值（操作码）。
+ * @brief 指令函数定义及分发表结构
  */
 
-/* 系统类指令 */
-#define INSTR_NOP	0x00  /**< 空操作 */
-#define INSTR_HALT	0xFF  /**< 停止模拟器 */
-#define INSTR_LOAD_IMM  0x10  /**< LOAD Rn, imm */
-#define INSTR_MOV       0x11  /**< MOV Rn, Rm */
-#define INSTR_ADD       0x20  /**< ADD Rn, Rm */
-#define INSTR_LOADM     0x12  /**< LOADM Rn, addr */
-#define INSTR_STORE     0x13  /**< STORE Rn, addr */
-#define INSTR_SUB       0x21  /**< SUB Rn, Rm */
-#define INSTR_INC       0x22  /**< INC Rn */
-#define INSTR_DEC       0x23  /**< DEC Rn */
-#define INSTR_JMP	0x30  /**< 无条件跳转 */
-#define INSTR_JZ	0x31  /**< 若 ZF==1 跳转 */
-#define INSTR_JNZ	0x32  /**< 若 ZF==0 跳转 */
-#define INSTR_JC	0x33  /**< 若 CF==1 跳转 */
-#define INSTR_JNC	0x34  /**< 若 CF==0 跳转 */
-#define INSTR_AND	0x24  /**< AND Rn, Rm */
-#define INSTR_OR	0x25  /**< OR Rn, Rm */
-#define INSTR_XOR	0x26  /**< XOR Rn, Rm */
-#define INSTR_NOT	0x27  /**< NOT Rn */
+/**
+ * 指令处理函数类型
+ */
+typedef void (*instr_fn_t)(struct cpu *cpu);
+
+/**
+ * 指令函数分发表：索引即为 opcode
+ */
+extern instr_fn_t instruction_table[256];
+
+/**
+ * instructions_init - 初始化指令函数表
+ */
+void instructions_init(void);
 
 #endif /* _INSTRUCTIONS_H */
